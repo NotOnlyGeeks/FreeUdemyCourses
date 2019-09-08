@@ -1,15 +1,12 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>{{ Detailcourse.course.name|safe }}</title>
-</head>
-<body>
+{% extends 'blog/home.html' %}
 
+      {% block title %}
+      {{ Detailcourse.course.name|safe }}
+      {% endblock title %}
+
+{% block maincontent %}
 <h1>{{ Detailcourse.course.name|safe }}</h1>
 
 {{ Detailcourse.whatyouwilllearn |safe }}
 {{ Detailcourse.description|safe }}
-
-</body>
-</html>
+{% endblock maincontent %}

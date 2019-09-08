@@ -6,7 +6,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <link rel="icon" href="https://www.udemy.com/staticx/udemy/images/v6/apple-touch-icon-57x57.png">
 
-    <title>Free Academy</title>
+    <title>
+      {% block title %}
+      Free Academy
+      {% endblock title %}
+    </title>
 
     <link rel="canonical" href="https://getbootstrap.com/docs/4.0/examples/album/">
 
@@ -31,6 +35,7 @@
     </header>
 
     <main role="main">
+{% block maincontent %}
 
       <div class="album py-4 bg-white">
         <div class="container-fluid">
@@ -62,7 +67,7 @@
           </div>
         </div>
       </div>
-
+{% endblock maincontent %}
     </main>
 
     <footer class="text-muted">

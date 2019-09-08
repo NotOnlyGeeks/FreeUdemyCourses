@@ -14,14 +14,14 @@ os.environ.setdefault('DJANGO_SETTINGS_MODULE','UdemyFreeCourses.settings')
 django.setup()
 
 
-from blog.models import Course
+from blog.models import Course,CourseDetail
 
 
 url="https://www.udemy.com/courses/development/?"
 second="price=price-free&sort=popularity"
 driver = webdriver.Chrome("C:\\Users\\PRAJWAL\\Desktop\\Udemy_affiliate\\chromedriver.exe")
 driver.maximize_window()
-
+course_links=[]
 # driver.get(url+second)
 # WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.CSS_SELECTOR, "div[class='list-view-course-card--course-card-wrapper--TJ6ET']>a>div>div>div>h4")));
 #
@@ -38,7 +38,7 @@ driver.maximize_window()
 # for (name,link,img) in itertools.zip_longest(names,links,imgs):
 #     print(name.text,',',link.get_attribute('href'),',',img.get_attribute('srcset').split(',')[1].split(' ')[1])
 
-for i in range(1,15):
+for i in range(1,2):
     if i==0 or i==1:
         driver.get(url + second)
     else:
@@ -58,15 +58,36 @@ for i in range(1,15):
     imgs = driver.find_elements_by_css_selector("div[class='list-view-course-card--course-card-wrapper--TJ6ET']>a>div>div>img")
     taglines = driver.find_elements_by_css_selector("div[class='list-view-course-card--headline-and-instructor--2nbyp']>span:first-of-type")
     authors = driver.find_elements_by_css_selector("div[class='list-view-course-card--headline-and-instructor--2nbyp']>span:nth-of-type(2)")
+
     for (name,link,img,tagline,author) in itertools.zip_longest(names,links,imgs,taglines,authors):
-        print(name.text, ',', link.get_attribute('href'), ',', img.get_attribute('srcset').split(',')[1].split(' ')[1],',',tagline.text,',',author.text)
+        course_links.append(link.get_attribute('href'))
+        # print(name.text, ',', link.get_attribute('href'), ',', img.get_attribute('srcset').split(',')[1].split(' ')[1],',',tagline.text,',',author.text)
         # content=f"{name.text}, {link.get_attribute('href')},{img.get_attribute('srcset').split(',')[1].split(' ')[1]},{tagline.text},{author.text},\n"
         # f=open('udemy.txt','a')
         # f.writelines(content)
         # f.close()
         Course.objects.get_or_create(name=name.text,course_link=link.get_attribute('href'),img_link=img.get_attribute('srcset').split(',')[1].split(' ')[1],website="https://www.udemy.com/",course_content=tagline.text,author=author.text)
 
-
+    print("")
+    for course in course_links:
+        # print(course)
+        driver.get(course)
+        # whatyouwilllearns = driver.find_elements_by_css_selector("span[class='what-you-get__text']")
+        # requirements = driver.find_elements_by_css_selector("li[class='requirements__item']")
+        # description_text = driver.find_elements_by_css_selector("div[data-purpose='collapse-description-text']>div>p")
+        description = driver.find_elements_by_css_selector("div[class ='js-simple-collapse-inner']")
+        # print(type(description[0]))
+        # print(description[0].get_attribute('innerHTML'))
+        # print(description[1].text)
+        # print()
+        # print()
+        # print()
+        # print(description[1].get_attribute('innerHTML'))
+        t = Course.objects.get_or_create(course_link=course)[0]
+        t.save()
+        # print(type(t))
+        w = CourseDetail.objects.get_or_create(description=description[1].get_attribute('innerHTML'),whatyouwilllearn=description[0].get_attribute('innerHTML'),course=t)[0]
+        w.save()
 
 
 # try:
